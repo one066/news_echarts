@@ -1,0 +1,7 @@
+all:
+  hosts:
+    kkone.top:
+      ansible_host: kkone.top
+      use_role: one
+      stage: production
+      project: news_echarts

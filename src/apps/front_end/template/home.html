@@ -1,0 +1,534 @@
+{% extends 'user_base.html' %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+    <section class="page-top-banner section-gap-full relative" data-stellar-background-ratio="0.5">
+        <div class="overlay overlay-bg"></div>
+        <div class="container">
+            <div class="row section-gap-half">
+                <div class="col-lg-12 text-center">
+                    <h1>News Echarts</h1>
+                    <h4>新闻 可视化系统</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="service-section section-gap-full">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="single-service">
+                        <i class="ti-user"></i>
+                        <h1>
+                            <span id="people_news_num">560</span>+</h1>
+                        <h4> 人民网 </h4>
+                    </div>
+                </div>
+                <div class="col-lg-3  col-md-6 pb-30">
+                    <div class="single-service">
+                        <i class="ti-announcement"></i>
+                        <h1>
+                            <span id="china_news_num">236</span>+</h1>
+                        <h4>中国新闻网</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3  col-md-6 pb-30">
+                    <div class="single-service">
+                        <i class="ti-bar-chart"></i>
+                        <h1>
+                            <span id="cctv_news_num">1432</span>+</h1>
+                        <h4>央视新闻</h4>
+                    </div>
+                </div>
+                <div class="col-lg-3  col-md-6 pb-30">
+                    <div class="single-service">
+                        <i class="ti-palette"></i>
+                        <h1>
+                            <span id="sina_news_num">123</span>+</h1>
+                        <h4>新浪新闻</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="skill-section">
+        <div class="container">
+            <div class="row align-items-center section-gap-full">
+                <div class="col-md-6 skill-left" id="bar" style="width: 600px; height: 300px">
+                </div>
+                <div class="col-md-6 skill-right" id="pie" style="width: 600px; height: 300px">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="stat-section section-gap-half">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12" id="map" style="width: 600px; height: 300px">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="service-section section-gap-full">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6  col-md-12 pb-30">
+                    <div class="single-service" id="people_news_click_top">
+                        <i class="ti-user"></i>
+                        <h4> 人民网 </h4>
+                    </div>
+                </div>
+                <div class="col-lg-6  col-md-12 pb-30">
+                    <div class="single-service" id="china_news_click_top">
+                        <i class="ti-announcement"></i>
+                        <h4>中国新闻网</h4>
+                    </div>
+                </div>
+                <div class="col-lg-6  col-md-12 pb-30">
+                    <div class="single-service" id="cctv_news_click_top">
+                        <i class="ti-bar-chart"></i>
+                        <h4>央视新闻</h4>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 pb-30">
+                    <div class="single-service" id="sina_news_click_top">
+                        <i class="ti-palette"></i>
+                        <h4>新浪新闻</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section section-gap-half relative">
+        <div class="overlay overlay-bg"></div>
+        <div class="container">
+            <div class="row section-gap-half">
+                <div class="col-md-6 skill-left" id="news_recommended">
+                    <h4>推荐</h4>
+
+                </div>
+                <div class="col-md-6 skill-right">
+                    <div class="text-center">
+                        <h1>news</h1>
+                        <h4>了解更多的新闻</h4>
+                        <a class="primary-btn" href="{{ url_for('front_end_views.news') }}">Go</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq-section section-gap-full">
+        <div class="container">
+            <div class="section-title">
+                <h2 class="text-center">热搜</h2>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <dl class="accordion">
+                        <dt>
+                            <a href="#" class="active">微博 热搜</a>
+                        </dt>
+                        <dd id="wei_bo_top">
+                        </dd>
+                        <dt>
+                            <a href="#">bilibili 热搜</a>
+                        </dt>
+                        <dd id="bili_bili_top">
+                        </dd>
+                        <dt>
+                            <a href="#">知乎 热搜</a>
+                        </dt>
+                        <dd id="zhi_hu_top">
+                        </dd>
+                        <dt>
+                            <a href="#">百度 热搜</a>
+                        </dt>
+                        <dd id="bai_du_top">
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block custom_js %}
+    <script src="{{ url_for('front_end_views.static',filename='js/echarts.min.js') }}"></script>
+    <script src="{{ url_for('front_end_views.static',filename='js/china.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: "{{ url_for('news.NewsNumService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    const data = result_data.valueOf()['data'];
+                    $("#people_news_num").html(data["人民网"])
+                    $("#china_news_num").html(data["中国新闻网"])
+                    $("#cctv_news_num").html(data["央视新闻"])
+                    $("#sina_news_num").html(data["新浪新闻"])
+                },
+                error: function (e) {
+                    console.log("新闻数量加载失败")
+                }
+            })
+        })
+
+    </script>
+    <script>
+        async function get_words() {
+            var words;
+            await $.ajax({
+                url: "{{ url_for('news.TopWordsService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    words = result_data["words"]
+                    if (words.length === 0){
+                        alert("系统更新数据中")
+                    }
+                },
+                error: function (e) {
+                    console.log("新闻数量加载失败")
+                }
+            })
+
+            return words
+        }
+
+        get_words().then(
+            function draw_bar(words_data) {
+
+                var chartDom = document.getElementById('bar');
+                var myChart = echarts.init(chartDom);
+                var option;
+                var words = [];
+                var names = [];
+
+                const pathSymbols = {
+                    reindeer:
+                        'path://M-22.788,24.521c2.08-0.986,3.611-3.905,4.984-5.892 c-2.686,2.782-5.047,5.884-9.102,7.312c-0.992,0.005-0.25-2.016,0.34-2.362l1.852-0.41c0.564-0.218,0.785-0.842,0.902-1.347 c2.133-0.727,4.91-4.129,6.031-6.194c1.748-0.7,4.443-0.679,5.734-2.293c1.176-1.468,0.393-3.992,1.215-6.557 c0.24-0.754,0.574-1.581,1.008-2.293c-0.611,0.011-1.348-0.061-1.959-0.608c-1.391-1.245-0.785-2.086-1.297-3.313 c1.684,0.744,2.5,2.584,4.426,2.586C-8.46,3.012-8.255,2.901-8.04,2.824c6.031-1.952,15.182-0.165,19.498-3.937 c1.15-3.933-1.24-9.846-1.229-9.938c0.008-0.062-1.314-0.004-1.803-0.258c-1.119-0.771-6.531-3.75-0.17-3.33 c0.314-0.045,0.943,0.259,1.439,0.435c-0.289-1.694-0.92-0.144-3.311-1.946c0,0-1.1-0.855-1.764-1.98 c-0.836-1.09-2.01-2.825-2.992-4.031c-1.523-2.476,1.367,0.709,1.816,1.108c1.768,1.704,1.844,3.281,3.232,3.983 c0.195,0.203,1.453,0.164,0.926-0.468c-0.525-0.632-1.367-1.278-1.775-2.341c-0.293-0.703-1.311-2.326-1.566-2.711 c-0.256-0.384-0.959-1.718-1.67-2.351c-1.047-1.187-0.268-0.902,0.521-0.07c0.789,0.834,1.537,1.821,1.672,2.023 c0.135,0.203,1.584,2.521,1.725,2.387c0.102-0.259-0.035-0.428-0.158-0.852c-0.125-0.423-0.912-2.032-0.961-2.083 c-0.357-0.852-0.566-1.908-0.598-3.333c0.4-2.375,0.648-2.486,0.549-0.705c0.014,1.143,0.031,2.215,0.602,3.247 c0.807,1.496,1.764,4.064,1.836,4.474c0.561,3.176,2.904,1.749,2.281-0.126c-0.068-0.446-0.109-2.014-0.287-2.862 c-0.18-0.849-0.219-1.688-0.113-3.056c0.066-1.389,0.232-2.055,0.277-2.299c0.285-1.023,0.4-1.088,0.408,0.135 c-0.059,0.399-0.131,1.687-0.125,2.655c0.064,0.642-0.043,1.768,0.172,2.486c0.654,1.928-0.027,3.496,1,3.514 c1.805-0.424,2.428-1.218,2.428-2.346c-0.086-0.704-0.121-0.843-0.031-1.193c0.221-0.568,0.359-0.67,0.312-0.076 c-0.055,0.287,0.031,0.533,0.082,0.794c0.264,1.197,0.912,0.114,1.283-0.782c0.15-0.238,0.539-2.154,0.545-2.522 c-0.023-0.617,0.285-0.645,0.309,0.01c0.064,0.422-0.248,2.646-0.205,2.334c-0.338,1.24-1.105,3.402-3.379,4.712 c-0.389,0.12-1.186,1.286-3.328,2.178c0,0,1.729,0.321,3.156,0.246c1.102-0.19,3.707-0.027,4.654,0.269 c1.752,0.494,1.531-0.053,4.084,0.164c2.26-0.4,2.154,2.391-1.496,3.68c-2.549,1.405-3.107,1.475-2.293,2.984 c3.484,7.906,2.865,13.183,2.193,16.466c2.41,0.271,5.732-0.62,7.301,0.725c0.506,0.333,0.648,1.866-0.457,2.86 c-4.105,2.745-9.283,7.022-13.904,7.662c-0.977-0.194,0.156-2.025,0.803-2.247l1.898-0.03c0.596-0.101,0.936-0.669,1.152-1.139 c3.16-0.404,5.045-3.775,8.246-4.818c-4.035-0.718-9.588,3.981-12.162,1.051c-5.043,1.423-11.449,1.84-15.895,1.111 c-3.105,2.687-7.934,4.021-12.115,5.866c-3.271,3.511-5.188,8.086-9.967,10.414c-0.986,0.119-0.48-1.974,0.066-2.385l1.795-0.618 C-22.995,25.682-22.849,25.035-22.788,24.521z',
+                };
+
+                for (let i = 0; i < words_data.length; i++) {
+                    words.push({value: words_data[i][1], symbol: pathSymbols.reindeer})
+                    names.push(words_data[i][0])
+                }
+
+                const labelSetting = {
+                    show: true,
+                    position: 'right',
+                    offset: [10, 0],
+                    fontSize: 16
+                };
+                option = {
+                    title: {
+                        text: '热词 top 10'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    grid: {
+                        containLabel: true,
+                        left: 20
+                    },
+                    yAxis: {
+                        data: names,
+                        inverse: true,
+                        axisLine: {show: false},
+                        axisTick: {show: false},
+                        axisLabel: {
+                            margin: 30,
+                            fontSize: 14
+                        },
+                        axisPointer: {
+                            label: {
+                                show: true,
+                                margin: 30
+                            }
+                        }
+                    },
+                    xAxis: {
+                        splitLine: {show: false},
+                        axisLabel: {show: false},
+                        axisTick: {show: false},
+                        axisLine: {show: false}
+                    },
+                    series: [
+                        {
+                            type: 'pictorialBar',
+                            barGap: '10%',
+                            label: labelSetting,
+                            symbolRepeat: true,
+                            symbolSize: ['80%', '60%'],
+                            data: words
+                        }
+                    ]
+                };
+
+                option && myChart.setOption(option);
+            }
+        )
+
+    </script>
+    <script>
+        async function get_emotional_total() {
+            var emotional_total;
+            await $.ajax({
+                url: "{{ url_for('news.EmotionalTotalService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    emotional_total = result_data["data"]
+
+                },
+                error: function (e) {
+                    console.log("情感统计加载失败")
+                }
+            })
+            return emotional_total
+        }
+
+        get_emotional_total().then(
+            function draw_pie(emotional_total) {
+                var chartDom = document.getElementById('pie');
+                var myChart = echarts.init(chartDom);
+                var option;
+                var pie_data = [];
+
+                for (var key in emotional_total) {
+                    pie_data.push({value: emotional_total[key], name: key})
+                }
+                option = {
+                    title: {
+                        text: '情感 统计'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        top: '5%',
+                        left: 'center'
+                    },
+                    series: [
+                        {
+                            name: '情感统计',
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            avoidLabelOverlap: false,
+                            itemStyle: {
+                                borderRadius: 10,
+                                borderColor: '#fff',
+                                borderWidth: 2
+                            },
+                            label: {
+                                show: false,
+                                position: 'center'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: '40',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: false
+                            },
+                            data: pie_data
+                        }
+                    ]
+                };
+
+                option && myChart.setOption(option);
+            }
+        )
+
+    </script>
+    <script>
+        async function get_news_num_by_provinces() {
+            var emotional_total;
+            await $.ajax({
+                url: "{{ url_for('news.NewsNumByProvincesService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    emotional_total = result_data["data"]
+
+                },
+                error: function (e) {
+                    console.log("各省份新闻统计加载失败")
+                }
+            })
+            return emotional_total
+        }
+
+        get_news_num_by_provinces().then(
+            function dram_map(news_num_by_provinces) {
+                var map_data = [];
+
+                for (var key in news_num_by_provinces) {
+                    var provinces_name = key;
+                    provinces_name = provinces_name.toString().replace(/省/, "");
+                    provinces_name = provinces_name.toString().replace(/市/, "");
+                    map_data.push({value: news_num_by_provinces[key], name: provinces_name})
+                }
+                var optionMap = {
+                    title: {
+                        text: '各省新闻统计',
+                        subtext: '',
+                        x: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+
+                    //左侧小导航图标
+                    visualMap: {
+                        show: true,
+                        x: 'left',
+                        y: 'center',
+                        splitList: [
+                            {start: 100, end: 120}, {start: 80, end: 100},
+                            {start: 60, end: 80}, {start: 40, end: 60},
+                            {start: 20, end: 40}, {start: 0, end: 20},
+                        ],
+                        color: ['#f57454', '#85daef', '#74e2ca', '#e6ac53', '#9fb5ea', '#9feaa5']
+                    },
+
+                    //配置属性
+                    series: [{
+                        name: '数据',
+                        type: 'map',
+                        mapType: 'china',
+                        // roam: true,
+                        label: {
+                            // normal: {
+                            //     show: true  //省份名称
+                            // },
+                            emphasis: {
+                                show: false
+                            }
+                        },
+                        data: map_data  //数据
+                    }]
+                };
+                //初始化echarts实例
+                var myChart = echarts.init(document.getElementById('map'));
+
+                //使用制定的配置项和数据显示图表
+                myChart.setOption(optionMap);
+            }
+        )
+    </script>
+    <script>
+        async function get_news_top_click_by_app() {
+            var news_top_click_by_app;
+            await $.ajax({
+                url: "{{ url_for('news.NewsTopClickByAppService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    news_top_click_by_app = result_data["data"]
+                },
+                error: function (e) {
+                    console.log("各平台点击前10加载失败")
+                }
+            })
+            return news_top_click_by_app
+        }
+
+        get_news_top_click_by_app().then(
+            function news_top_click_by_app(news_top_click_by_app) {
+                for (let i = 0; i < 10; i++) {
+                    var show_url = `${window.location.protocol}//${window.location.host}/echarts_news/show`;
+                        $("#people_news_click_top").append(`<p><a target='_blank' href="` + show_url +
+                            `?news_id=${news_top_click_by_app["人民网"][i]["news_id"]}">${news_top_click_by_app["人民网"][i]["title"]}</a></p>`);
+
+                    $("#china_news_click_top").append(`<p><a target='_blank' href="` + show_url +
+                        `?news_id=${news_top_click_by_app["中国新闻网"][i]["news_id"]}">${news_top_click_by_app["中国新闻网"][i]["title"]}</a></p>`);
+                    $("#cctv_news_click_top").append(`<p><a target='_blank' href="` + show_url +
+                        `?news_id=${news_top_click_by_app["央视新闻"][i]["news_id"]}">${news_top_click_by_app["央视新闻"][i]["title"]}</a></p>`);
+                    $("#sina_news_click_top").append(`<p><a target='_blank' href="` + show_url +
+                        `?news_id=${news_top_click_by_app["新浪新闻"][i]["news_id"]}">${news_top_click_by_app["新浪新闻"][i]["title"]}</a></p>`);
+
+                }
+            }
+        )
+    </script>
+    <script>
+        async function get_news_recommended() {
+            var top_ten_news;
+            await $.ajax({
+                url: "{{ url_for('news.RecommendedNewsService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    top_ten_news = result_data["top_ten_news"]
+                },
+                error: function (e) {
+                    console.log("推荐加载失败")
+                }
+            })
+            return top_ten_news
+        }
+
+        get_news_recommended().then(
+            function news_recommended(top_ten_news) {
+                var show_url = {{ url_for('front_end_views.show')| tojson }}
+                for (let i = 0; i < top_ten_news.length; i++) {
+                    $("#news_recommended").append("<p><a target='_blank' href='" + show_url + "?news_id=" + top_ten_news[i]["news_id"] +"'>"
+                        + top_ten_news[i]["title"] +
+                        "</a>&nbsp;&nbsp;&nbsp;&nbsp;<span class='badge badge-success'>" + top_ten_news[i]["app_chinese_name"] + "</span></p>");
+                }
+            }
+        )
+    </script>
+    <script>
+        async function get_hot_search() {
+            var hot_search;
+            await $.ajax({
+                url: "{{ url_for('news.HotSearchService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    hot_search = result_data["hot_search"]
+                },
+                error: function (e) {
+                    console.log("热搜加载失败")
+                }
+            })
+            return hot_search
+        }
+
+        get_hot_search().then(
+            function hot_search(hot_search) {
+                for (var app_name in hot_search) {
+                    for (let i = 0; i < hot_search[app_name].length; i++) {
+                        for (var title in hot_search[app_name][i]) {
+                            $(`#${app_name}`).append(`<p><a target='_blank' href="${hot_search[app_name][i][title]}">${title}</a></p>`)
+                        }
+                    }
+                }
+            }
+        )
+    </script>
+{% endblock %}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {% block title %} one {% endblock %} </title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700" rel="stylesheet">
+
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/bootstrap.min.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/style.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/themify-icons.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/font-awesome.min.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/responsive.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/owl.carousel.min.css') }}>
+
+    {% block custom_css %}{% endblock %}
+
+</head>
+<body>
+<header class="header-area" id="header-area">
+    <div class="dope-nav-container breakpoint-off">
+        <div class="container">
+            <div class="row">
+                <!-- dope Menu -->
+                <nav class="dope-navbar justify-content-between" id="dopeNav">
+
+                    <!-- Logo -->
+                    <a class="nav-brand" href="{{ url_for('front_end_views.home') }}">
+                        <span>one</span>
+                    </a>
+
+                    <!-- Navbar Toggler -->
+                    <div class="dope-navbar-toggler">
+                                <span class="navbarToggler">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </span>
+                    </div>
+
+                    <!-- Menu -->
+                    <div class="dope-menu">
+
+                        <!-- close btn -->
+                        <div class="dopecloseIcon">
+                            <div class="cross-wrap">
+                                <span class="top"></span>
+                                <span class="bottom"></span>
+                            </div>
+                        </div>
+
+                        <!-- Nav Start -->
+                        <div class="dopenav">
+                            <ul id="nav">
+                                <li>
+                                    <a href="{{ url_for('front_end_views.home') }}">Home</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url_for('front_end_views.news') }}">News</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url_for('front_end_views.chat') }}">Chat</a>
+                                </li>
+                                <li>
+                                    <a href="" id="name"></a>
+                                    <ul class="dropdown">
+                                        <li><a href="{{ url_for('front_end_views.profile') }}">profile</a></li>
+                                        <li data-toggle="modal" data-target="#logoutModal"><a>退出</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                        </div>
+                        <!-- Nav End -->
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+{% block content %} {% endblock %}
+
+<footer class="footer-section section-gap-half">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-sm-6 footer-cols">
+                <p class="copyright-text">Copyright © 2022
+                    <i class="fa fa-heart" aria-hidden="true"></i> By <br>
+                    <a href="" target="_blank">one</a> 蜀ICP备2021027913号
+                </p>
+            </div>
+            <div class="col-lg-3 col-sm-6 footer-cols">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="{{ url_for('front_end_views.home') }}">Home</a></li>
+                    <li><a href="{{ url_for('front_end_views.news') }}">News</a></li>
+                    <li><a href="{{ url_for('front_end_views.chat') }}">Chat</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-sm-6 footer-cols">
+                <h4>Help</h4>
+                <ul>
+                    <li><a data-toggle="modal" data-target="#disclaimer">免责声明</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-sm-6 footer-cols">
+                <h4>Get in touch</h4>
+                <ul>
+                    <li>
+                        <a>1875874066@qq.com</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="modal fade basic-info-modal" id="disclaimer" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content text-center">
+                        <h2 class="item-title">免责声明</h2>
+                        <h4>本网站所提供的信息，只供参考之用。</h4>
+                        <h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本网站所收集的部分公开资料来源于互联网，转载的目的在于传递更多信息及用于网络分享，并不代表本站赞同其观点和对其真实性负责，也不构成任何其他建议。如果您发现网站上有侵犯您的知识产权的作品，请与我们取得联系，我们会及时修改或删除。</h5>
+                        <br><h5>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;本网站所提供的信息，只供参考之用。本网站不保证信息的准确性、有效性、及时性和完整性。在法律允许的范围内，本网站在此声明，不承担用户或任何人士就使用或未能使用本网站所提供的信息或任何链接所引致的任何直接、间接、附带、从属、特殊、惩罚性或惩戒性的损害赔偿。</h5>
+                        <br>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+<div class="scroll-top">
+    <i class="ti-angle-up"></i>
+</div>
+
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="{{ url_for('front_end_views.login') }}">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="{{ url_for('front_end_views.static',filename='js/jquery-2.2.4.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/dopeNav.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.easing.1.3.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.parallax-scroll.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.stellar.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.counterup.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/owl.carousel.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/waypoints.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/main.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.cookie-1.4.1.min.js') }}"></script>
+<script>
+    function get_name() {
+        return $.cookie('name')
+    }
+
+    function get_user_id() {
+        return $.cookie('user_id')
+    }
+
+    $(document).ready(function () {
+        $("#name").html(get_name())
+    })
+</script>
+{% block custom_js %}{% endblock %}
+</body>
+</html>

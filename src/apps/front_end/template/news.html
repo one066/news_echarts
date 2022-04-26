@@ -1,0 +1,91 @@
+{% extends 'user_base.html' %}
+{% block title %} News {% endblock %}
+{% block custom_css %}
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/dataTables.bootstrap4.min.css') }}>
+{% endblock %}
+
+{% block content %}
+
+    <section class="page-top-banner section-gap-full relative" data-stellar-background-ratio="0.5">
+        <div class="overlay overlay-bg"></div>
+        <div class="container">
+            <div class="row section-gap-half">
+                <div class="col-lg-12 text-center">
+                    <h1>News</h1>
+                    <h4>了解更多新闻</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="service-section section-gap-full">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="card col-lg-12">
+                    <div class="header">
+                        </br><h1 class="h4 text-gray-900 mb-4">新闻集合</h1></br>
+                    </div>
+                    <div class="body">
+                        <div class="table">
+                            <table class="table" id="dataTable">
+                                <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>来源</th>
+                                    <th>上传时间</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block custom_js %}
+    <script src="{{ url_for('front_end_views.static',filename='js/jquery.dataTables.min.js') }}"></script>
+    <script>
+        async function get_headers() {
+            var news;
+            await $.ajax({
+                url: "{{ url_for('news.GetNewHeaderService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    news = result_data["news"]
+                    if (news.length === 0){
+                        alert("系统更新数据中")
+                    }
+                },
+                error: function (e) {
+                    console.log("新闻列表加载失败")
+                }
+            })
+            return news
+        }
+
+        $(document).ready(function () {
+            get_headers().then(
+                function set_data(news) {
+                    var news_data = []
+                    for (let i = 0; i < news.length; i++) {
+                        var show_url = `${window.location.protocol}//${window.location.host}/echarts_news/show`;
+                        news_data.push([
+                            `<a target='_blank' href="${show_url}?news_id=${news[i]['news_id']}">${news[i]['title']}</a>`,
+                            news[i]['app_chinese_name'],
+                            news[i]['upload_date'],
+                        ])
+                    }
+                    $('#dataTable').DataTable({data: news_data, 'ordering':false, });
+                }
+            )
+
+        });
+    </script>
+{% endblock %}

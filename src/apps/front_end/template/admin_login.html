@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin-Login</title>
+
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/login.css') }}>
+</head>
+<body>
+<div class="cont">
+    <div class="form sign-in">
+        <h2>账号登录</h2>
+        <label>
+            <span>昵称、邮箱</span>
+            <input id="nick_name_or_email" type="email"/>
+        </label>
+        <label>
+            <span>密码</span>
+            <input id="password" type="password"/>
+        </label>
+        <button class="submit" onclick="login()">Sign In</button>
+        <a href="{{ url_for('front_end_views.login') }}"><button class="fb-btn"><span>user</span></button></a>
+    </div>
+</div>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery-2.2.4.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.cookie-1.4.1.min.js') }}"></script>
+<script>
+    document.querySelector('.img__btn').addEventListener('click', function () {
+        document.querySelector('.cont').classList.toggle('s--signup');
+    });
+</script>
+<script>
+    function login() {
+        var nick_name_or_email = $("#nick_name_or_email").val()
+        var password = $("#password").val()
+        console.log(password)
+        if (nick_name_or_email.length < 3) {
+            alert("请输入正确的邮箱或者昵称格式")
+        }
+        if (password.length < 3) {
+            alert("密码格式错误")
+        } else {
+            $.ajax({
+                url: "{{ url_for('admin.AdminLoginService') }}",
+                type: 'POST',
+                async: true,
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    "nick_name_or_email": nick_name_or_email,
+                    "password": password,
+                }),
+                success: function (result_data) {
+                    if (!result_data.valueOf()['ok']) {
+                        alert("密码错误！！");
+                    } else {
+                        $.cookie("user_id", null, {expires: -1});
+                        $.cookie("token", null, {expires: -1});
+                        $.cookie("name", null, {expires: -1});
+                        $.cookie('name', result_data.valueOf()['result']['nick_name'], {path: '/'});
+                        $.cookie('user_id', result_data.valueOf()['result']['user_id'], {path: '/'});
+                        $.cookie('token', result_data.valueOf()['result']['token'], {path: '/'});
+                        window.location.href = "{{ url_for('front_end_views.update_news') }}";
+                    }
+                },
+                error: function (e) {
+                    alert("登录失败")
+                }
+            })
+        }
+    }
+</script>
+</body>
+</html>

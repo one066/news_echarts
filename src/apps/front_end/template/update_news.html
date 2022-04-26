@@ -1,0 +1,206 @@
+{% extends 'admin_base.html' %}
+{% block title %} Update-News {% endblock %}
+
+
+{% block content %}
+    <section class="service-section section-gap-full">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="card col-lg-12">
+                    <div class="header">
+                        </br><h1 class="h4 text-gray-900 mb-4">新闻集合</h1></br>
+                    </div>
+                    <div class="body">
+                        <div class="table">
+                            <table class="table" id="dataTable">
+                                <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>标题</th>
+                                    <th>情感</th>
+                                    <th>简述</th>
+                                    <th>关键词</th>
+                                    <th>点击次数</th>
+                                    <th>来源</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade basic-info-modal" id="update_news" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <h5 class="item-title">修改 新闻</h5>
+                <div class="tab-content">
+                    <div class="tab-pane fade show active presonal-update" id="" role="tabpanel">
+                        <form id="update_news_form" onsubmit="return false">
+                            <div class="row gutters-20">
+                                <div class="col-lg-12 form-group">
+                                    <label>id</label>
+                                    <input type="text" id="news_id" class="modal-news_id form-control"
+                                           readonly="readonly">
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>标题</label>
+                                    <input type="text" id="title" class="modal-title form-control" readonly="readonly">
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>情感</label>
+                                    <input type="text" id="positive" class="modal-positive form-control">
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>简述</label>
+                                    <textarea type="text" id="abstract" class="modal-abstract form-control"
+                                              style="height: 100px"></textarea>
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>关键词</label>
+                                    <input type="text" id="keywords" class="modal-keywords form-control">
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>点击次数</label>
+                                    <input type="text" id="number_of_clicks" class="modal-number_of_clicks form-control"
+                                           readonly="readonly">
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <label>来源</label>
+                                    <input type="text" id="app_chinese_name" class="modal-app_chinese_name form-control"
+                                           readonly="readonly">
+                                </div>
+                                <div class="col-lg-12 form-group">
+                                    <button type="submit" class="submit-btn">确定</button>
+                                    <button type="button" class="cancel-btn" data-dismiss="modal">取消</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block custom_js %}
+    <script>
+        async function get_news() {
+            var news_result;
+            await $.ajax({
+                url: "{{ url_for('admin.GetAllNewAnalysisResultService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    news_result = result_data["analysis_result"]
+                },
+                error: function (e) {
+                    console.log("failed")
+                }
+            })
+            return news_result
+        }
+
+        $(document).ready(function () {
+            get_news().then(
+                function set_data(news_result) {
+                    var news_data = []
+                    for (let i = 0; i < news_result.length; i++) {
+
+                        news_data.push([
+                            news_result[i]['news_id'],
+                            news_result[i]['title'],
+                            news_result[i]['positive'],
+                            news_result[i]['abstract'],
+                            news_result[i]['keywords'],
+                            news_result[i]['number_of_clicks'],
+                            news_result[i]['app_chinese_name'],
+                        ])
+                    }
+                    $('#dataTable').DataTable({
+                        data: news_data,
+                        'ordering': false,
+                        "fnCreatedRow": function (nRow, aData, iDataIndex) {
+                            $(nRow).attr('data-toggle', "modal");
+                            $(nRow).attr('data-target', "#update_news");
+                            $(nRow).attr('data-news_id', aData[0]);
+                            $(nRow).attr('data-title', aData[1]);
+                            $(nRow).attr('data-positive', aData[2]);
+                            $(nRow).attr('data-abstract', aData[3]);
+                            $(nRow).attr('data-keywords', aData[4]);
+                            $(nRow).attr('data-number_of_clicks', aData[5]);
+                            $(nRow).attr('data-app_chinese_name', aData[6]);
+                        }
+                    });
+                }
+            )
+        })
+
+        $('#update_news').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var news_id = button.data('news_id') // Extract info from data-* attributes
+            var title = button.data('title') // Extract info from data-* attributes
+            var positive = button.data('positive') // Extract info from data-* attributes
+            var abstract = button.data('abstract') // Extract info from data-* attributes
+            var keywords = button.data('keywords') // Extract info from data-* attributes
+            var number_of_clicks = button.data('number_of_clicks') // Extract info from data-* attributes
+            var app_chinese_name = button.data('app_chinese_name') // Extract info from data-* attributes
+
+            var modal = $(this)
+            modal.find('.modal-news_id').val(news_id)
+            modal.find('.modal-title').val(title)
+            modal.find('.modal-positive').val(positive)
+            modal.find('.modal-abstract').val(abstract)
+            modal.find('.modal-keywords').val(keywords)
+            modal.find('.modal-number_of_clicks').val(number_of_clicks)
+            modal.find('.modal-app_chinese_name').val(app_chinese_name)
+
+        })
+    </script>
+    <script>
+        async function update_news(user_profile) {
+            await $.ajax({
+                url: "{{ url_for('news.UpdateNewsService') }}",
+                type: 'PATCH',
+                async: true,
+                contentType: 'application/json',
+                data: JSON.stringify(user_profile),
+                success: function (result_data) {
+                    alert("修改成功")
+                    console.log(result_data)
+                    location.reload();
+                },
+                error: function (e) {
+                    alert("修改资料失败")
+                    location.reload();
+                }
+            })
+        }
+
+        $("#update_news_form").submit(function (e) {
+            var news_id = $("#news_id").val();
+            var positive = $("#positive").val();
+            var abstract = $("#abstract").val();
+            var keywords = $("#keywords").val();
+
+            if (!positive || !abstract || !keywords) {
+                alert("信息 不能为空")
+                return false
+            }
+
+            update_news({
+                "news_id": news_id,
+                "positive": positive,
+                "abstract": abstract,
+                "keywords": keywords,
+            }).then()
+        });
+    </script>
+{% endblock %}

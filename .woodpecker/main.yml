@@ -1,0 +1,36 @@
+clone:
+  git:
+    image: 127.0.0.1:5000/ci-git
+
+pipeline:
+  lint:
+    image: 127.0.0.1:5000/lint:v1
+    commands:
+    - ls -al
+    - cd src
+    - ls -al
+    - yapf -dr . | (! grep '.')
+    - isort . --check-only --diff
+
+  build_docker_image:
+    image: plugins/docker
+    insecure: true
+    registry: 172.21.0.1:5000
+    repo: 172.21.0.1:5000/news_echarts
+    tags:
+      - latest
+    when:
+      event: tag
+
+  deploy_by_push_master:
+    image: plugins/ansible
+    environment:
+      ANSIBLE_JINJA2_EXTENSIONS: jinja2.ext.loopcontrols
+    secrets:
+    - source: aliyun_ssh_key
+      target: ansible_private_key
+    playbook: deploy/playbook.yml
+    inventory: deploy/one_hosts.yml
+    flush_cache: true
+    when:
+      event: tag

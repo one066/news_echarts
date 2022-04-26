@@ -1,0 +1,158 @@
+{% extends 'user_base.html' %}
+{% block title %} Chat {% endblock %}
+{% block custom_css %}
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/app.css') }}>
+{% endblock %}
+
+{% block content %}
+    <section class="page-top-banner section-gap-full relative" data-stellar-background-ratio="0.5">
+        <div class="overlay overlay-bg"></div>
+        <div class="container">
+            <div class="row section-gap-half">
+                <div class="col-lg-12 text-center">
+                    <h1>Chat</h1>
+                    <h4>加入聊天</h4>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="service-section section-gap-full">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-xl-12 col-lg-7">
+                    <div class="card chat-conversion">
+                        <div class="card-body">
+                            <div class="item-heading">
+                                <div class="media">
+                                    <div class="item-img" style="height: 50px">
+                                        <img src="" id="user_photo" height="50px" width="50px" alt="Thumb,"
+                                             style="height: 100%">
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="item-title" id="nick_name"></h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <ul class="coversion-details" id="divMessage"
+                                style="overflow-y: scroll;overflow-x: hidden;height: 500px">
+
+                            </ul>
+                            <div class="message-box">
+                                <form onSubmit="return false;">
+                                <div class="input-group">
+
+                                    <input type="text" id="text" class="form-control" placeholder="Enter Message...">
+                                    <div class="input-group-append">
+                                        <button type="submit" onclick="send_msg()" class="item-btn"><i
+                                                class="ti-arrow-circle-right"></i></button>
+                                    </div>
+
+                                </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block custom_js %}
+    <script src="{{ url_for('front_end_views.static',filename='js/socket.io.min.js') }}"></script>
+    <script>
+        var socket;
+        $(document).ready(function () {
+            var user_id = $.cookie('user_id')
+            var name = $.cookie('name')
+
+            $("#nick_name").html(name)
+            $("#user_photo").attr('src', `${window.location.protocol}//${window.location.host}/echarts_news/photo/${user_id}.jpg`);
+        })
+
+	    socket = new io.connect(`${window.location.protocol}//${window.location.host}/echo`);
+        socket.on('echo', function (data) {
+                data = JSON.parse(data)
+                var user_id = $.cookie('user_id')
+                if (data["user_id"] !== user_id) {
+                    $("#divMessage").append(`<h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${data["name"]}</h6><li class="text-you" style="height: 50px">
+                                        <img src="${window.location.protocol}//${window.location.host}/echarts_news/photo/${data["user_id"]}.jpg" style="height: 100%" height="50px" width="50px" alt="Chat">
+                                        <span class="chat-text">${data["content"]}</span>
+                                    </li>`)
+                } else {
+                    $("#divMessage").append(`<li class="text-me text-right">
+                                        <span class="chat-text">${data["content"]}</span>
+                                    </li>`)
+                }
+                ;
+
+                $("#divMessage").stop().animate({
+                    scrollTop: $('#divMessage')[0].scrollHeight
+                }, 800);
+            });
+
+        window.onbeforeunload = function () {
+                socket.close();
+            };
+
+        function send_msg() {
+            var content = $("#text").val();
+            if (!content) {
+                alert("请输入内容")
+            } else {
+                socket.emit('echo', JSON.stringify({
+                    "content": content,
+                    "user_id": $.cookie('user_id'),
+                    "name": $.cookie('name')
+                }));
+                $("#text").val("");
+            }
+        };
+
+    </script>
+    <script>
+
+        async function get_chat_message() {
+            var messages;
+            await $.ajax({
+                url: "{{ url_for('chat.GetMessageService') }}",
+                type: 'GET',
+                async: true,
+                contentType: 'application/json',
+                success: function (result_data) {
+                    messages = result_data["messages"]
+
+                },
+                error: function (e) {
+                    console.log("加载消息失败")
+                }
+            })
+
+            return messages
+        }
+
+        $(document).ready(function () {
+            get_chat_message().then(
+                function loads_message(message) {
+                    var user_id = $.cookie('user_id')
+                    for (let i = 0; i < message.length; i++) {
+                        if (message[i]["user_id"] !== user_id) {
+                            $("#divMessage").append(`<h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${message[i]["name"]}</h6><li class="text-you" style="height: 50px">
+                                    <img src="${window.location.protocol}//${window.location.host}/echarts_news/photo/${message[i]["user_id"]}.jpg" style="height: 100%" height="50px" width="50px" alt="Chat">
+                                    <span class="chat-text">${message[i]["content"]}</span>
+                                </li>`)
+                        } else {
+                            $("#divMessage").append(`<li class="text-me text-right">
+                                    <span class="chat-text">${message[i]["content"]}</span>
+                                </li>`)
+                        }
+                        $("#divMessage")[0].scrollTop = $("#divMessage")[0].scrollHeight;
+                    }
+                }
+            )
+        })
+
+    </script>
+{% endblock %}

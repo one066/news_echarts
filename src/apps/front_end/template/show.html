@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title> Show </title>
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,300,500,600,700" rel="stylesheet">
+
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/bootstrap.min.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/style.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/themify-icons.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/font-awesome.min.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/responsive.css') }}>
+    <link rel="stylesheet" href={{ url_for('front_end_views.static',filename='css/owl.carousel.min.css') }}>
+
+</head>
+<body>
+<section class="service-section section-gap-full">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6">
+                <div class="single-service" >
+                    <h4>词云</h4>
+                    <div id="wor_cloud" style="height: 240px;width: 450px"></div>
+                </div>
+            </div>
+            <div class="col-lg-6  col-md-6 pb-30">
+                <div class="single-service">
+                    <h4>简述</h4>
+                    <br><br><br>
+                    <p id="sketch"></p><br><br><br>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="card col-lg-12">
+                <a id="news_href" href="" target='_blank'><h1>原文</h1></a>
+                <iframe id="news_src" src="" width="100%"
+                        height="600px"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="stat-section section-gap-half">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-6">
+                <div class="single-stat">
+                    <i class="ti-server"></i>
+                    <br><br><h4 id="words"></h4><br>
+                    <h4>关键词</h4>
+                </div>
+            </div>
+            <div class="col-lg-4  col-md-6 pb-30">
+                <div class="single-stat">
+                    <i class="ti-face-smile"></i>
+                    <h1 id="emotional"></h1>
+                    <h4>情感</h4>
+                </div>
+            </div>
+            <div class="col-lg-4  col-md-6 pb-30">
+                <div class="single-stat">
+                    <i class="ti-thumb-up"></i>
+                    <h1>
+                        <span class="" id="click_num"></span>+</h1>
+                    <h4>点赞</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <br>
+        <div class="row">
+            <div class="col-lg-12 col-md-6 col-sm-6">
+                <div class="single-service text-center">
+                    <p class="btn-danger"> 本页面所有数据仅供参考 </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="scroll-top">
+    <i class="ti-angle-up"></i>
+</div>
+
+<script src="{{ url_for('front_end_views.static',filename='js/jquery-2.2.4.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/dopeNav.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.easing.1.3.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/popper.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.parallax-scroll.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.stellar.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.counterup.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/owl.carousel.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/waypoints.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/main.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/jquery.cookie-1.4.1.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/echarts.min.js') }}"></script>
+<script src="{{ url_for('front_end_views.static',filename='js/echarts-wordcloud.js') }}"></script>
+<script>
+
+    (function ($) {
+        $.getUrlParam = function (name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return '暂无';
+        }
+    })(jQuery);
+
+</script>
+<script>
+
+    async function get_news() {
+        var news;
+        await $.ajax({
+            url: "{{ url_for('news.GetNewAnalysisResultService') }}",
+            type: 'POST',
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                "news_id": news_id
+            }),
+            success: function (result_data) {
+                news = result_data.valueOf()["result"]["analysis_result"]
+            },
+            error: function (e) {
+                console.log("得到新闻分析结果失败")
+            }
+        })
+        return news
+    }
+
+    async function click() {
+        await $.ajax({
+            url: "{{ url_for('news.ClickNewsService') }}",
+            type: 'POST',
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                "news_id": news_id
+            }),
+            success: function (result_data) {
+                console.log("click success")
+            },
+            error: function (e) {
+                console.log("click failed")
+            }
+        })
+    }
+
+    var news_id = $.getUrlParam('news_id');
+    $(document).ready(function () {
+        get_news().then(
+            function format_data(news) {
+                $("#sketch").text(news["abstract"])
+                $("#words").text(news["keywords"])
+                $("#emotional").text(news["positive"])
+                $("#click_num").text(news["number_of_clicks"])
+                $("#news_href").attr('href', news["url"].replace(/http:/, "https:"));
+                $("#news_src").attr('src', news["url"].replace(/http:/, "https:"));
+
+                var chartDom = document.getElementById('wor_cloud');
+                var myChart = echarts.init(chartDom);
+
+                var option = {
+                    tooltip: {},
+                    series: [{
+                        type: 'wordCloud',
+                        gridSize: 2,
+                        sizeRange: [12, 50],
+                        rotationRange: [-90, 90],
+                        shape: 'pentagon',
+                        width: 400,
+                        height: 200,
+                        drawOutOfBound: true,
+                        textStyle: {
+                            color: function () {
+                                return 'rgb(' + [
+                                    Math.round(Math.random() * 160),
+                                    Math.round(Math.random() * 160),
+                                    Math.round(Math.random() * 160)
+                                ].join(',') + ')';
+                            }
+                        },
+                        emphasis: {
+                            textStyle: {
+                                shadowBlur: 10,
+                                shadowColor: '#333'
+                            }
+                        },
+                        data: JSON.parse(news["words_count"])
+                    }]
+
+                };
+
+                option && myChart.setOption(option);
+            }
+        )
+        click().then()
+    })
+</script>
+</body>
+</html>
