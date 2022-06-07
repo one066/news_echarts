@@ -89,7 +89,7 @@ class ClickNewsService(PostView):
 
 @class_route(news_services_api, 'view_history')
 @login_require
-@cache(ttl=60 * 10)
+@cache(ttl=60 * 10, only=True)
 class ViewHistoryNewsService(GetView):
     """
     得到玩家 观看历史
