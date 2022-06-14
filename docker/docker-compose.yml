@@ -11,8 +11,13 @@ services:
       - mysql
     environment:
       STAGE: development
+#      qq 邮箱配置
+      MAIL_USERNAME: xxx
+      MAIL_PASSWORD: xxx
+
 #      备案号(使用域名时填写)
 #      RECORD_NUMBER: "xxxxx"
+
     command: sleep 999999999
 
   redis:
