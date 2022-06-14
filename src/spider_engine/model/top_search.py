@@ -26,7 +26,7 @@ class TopSearch:
 
     def _get(self, url: str) -> Optional[Response]:
         _response = requests.get(
-            url, timeout=5, headers={"User-Agent": random_head()}
+            url, timeout=5, headers={"User-Agent": random_head()}, verify=False
         )
         return _response
 
