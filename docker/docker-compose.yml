@@ -11,6 +11,8 @@ services:
       - mysql
     environment:
       STAGE: development
+#      备案号(使用域名时填写)
+#      RECORD_NUMBER: "xxxxx"
     command: sleep 999999999
 
   redis:
